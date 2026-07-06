@@ -39,9 +39,9 @@ async function load() {
     <p><strong>Set break:</strong> ${exercise.SetBreakSec} sec</p>
   `; */
   document.getElementById("details").innerHTML = `
-	<p><strong>Sets x Reps :</strong> ${exercise.SetsCount} x ${exercise.RepCount}</p>
-    <p><strong>Time : </strong> ${exercise.RepDurationSec} sec/rep</p>
-    <p><strong>Breaks:</strong> ${exercise.RepBreakSec} sec/rep & ${exercise.SetBreakSec} sec/set </p>
+	<p><strong> ${exercise.SetsCount} Sets x ${exercise.RepCount} Reps </strong></p>
+    <p><strong> ${exercise.RepDurationSec} sec/rep </strong></p>
+    <p><strong>Breaks: ${exercise.RepBreakSec} sec/rep & ${exercise.SetBreakSec} sec/set </strong></p>
   `;
 
   
