@@ -31,14 +31,20 @@ async function load() {
   document.getElementById("img").src = exercise.Image1 || "";
   document.getElementById("instructions").innerText = exercise.Instructions || "";
 
-  document.getElementById("details").innerHTML = `
+  /* document.getElementById("details").innerHTML = `
     <p><strong>Reps:</strong> ${exercise.RepCount}</p>
     <p><strong>Rep duration:</strong> ${exercise.RepDurationSec} sec</p>
     <p><strong>Rep break:</strong> ${exercise.RepBreakSec} sec</p>
     <p><strong>Sets:</strong> ${exercise.SetsCount}</p>
     <p><strong>Set break:</strong> ${exercise.SetBreakSec} sec</p>
+  `; */
+  document.getElementById("details").innerHTML = `
+	<p><strong>Sets x Reps :</strong> ${exercise.SetsCount} x ${exercise.RepCount}</p>
+    <p><strong>Time : </strong> ${exercise.RepDurationSec} sec/rep</p>
+    <p><strong>Breaks:</strong> ${exercise.RepBreakSec} sec/rep & ${exercise.SetBreakSec} sec/set </p>
   `;
 
+  
   console.timeEnd("[WORKOUT] load exercise");
 }
 
