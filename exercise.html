@@ -2,13 +2,17 @@
 <html>
 <head>
   <title>Exercise</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
-  <div id="container">
-    <img id="img" />
-    <p id="instructions"></p>
+  <main id="container" class="exercise-page">
+    <img id="img" class="exercise-img" />
+
+    <p id="instructions" class="instructions"></p>
+
+    <section id="details" class="exercise-details"></section>
 
     <div id="controls">
       <button id="start">Start</button>
@@ -16,7 +20,7 @@
     </div>
 
     <div id="status"></div>
-  </div>
+  </main>
 
   <script type="module" src="js/workout.js"></script>
 </body>
