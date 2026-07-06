@@ -44,10 +44,23 @@ function render(filter = "") {
   const grid = document.getElementById("grid");
   grid.innerHTML = "";
 
-  const filtered = exercises.filter(e => {
-    if (!filter) return true;
-    return (e.MuscleGroups || "").toLowerCase().includes(filter.toLowerCase());
-  });
+const search = filter.trim().toLowerCase();
+const filtered = exercises.filter(e => {
+  if (!search) return true;
+
+  const haystack = [
+    e.ExID,
+    e.Name,
+    e.AlternateNames,
+    e.MuscleGroups,
+    e.DifficultyLevel
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+
+  return haystack.includes(search);
+});
 
   console.log("[HOME] filtered count:", filtered.length);
 
