@@ -21,27 +21,70 @@ function sleep(ms) {
   return new Promise(r => setTimeout(r, ms));
 }
 
+function speak(text) {
+  if (!("speechSynthesis" in window)) return;
+
+  speechSynthesis.cancel();
+
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.rate = 1;
+  utterance.pitch = 1;
+  utterance.volume = 1;
+
+  speechSynthesis.speak(utterance);
+}
+
+function setStatus(text) {
+  document.getElementById("status").innerText = text;
+}
+
+async function countdown(seconds, label = "") {
+  for (let i = seconds; i > 0; i--) {
+    if (!running) return;
+
+    const text = label ? `${label}: ${i}` : `${i}`;
+    setStatus(text);
+    speak(String(i));
+
+    await sleep(1000);
+  }
+}
+
 async function startWorkout() {
   running = true;
 
-  await sleep(5000);
+  document.getElementById("start").disabled = true;
+
+  speak("Get ready");
+  await countdown(5, "Starting in");
 
   for (let s = 0; s < exercise.SetsCount; s++) {
+    if (!running) return;
+
+    speak(`Set ${s + 1}`);
 
     for (let r = 0; r < exercise.RepCount; r++) {
       if (!running) return;
 
-      document.getElementById("status").innerText =
-        `Set ${s + 1}, Rep ${r + 1}`;
+      const repText = `Set ${s + 1} of ${exercise.SetsCount}, Rep ${r + 1} of ${exercise.RepCount}`;
+      setStatus(repText);
+      speak(String(r + 1));
 
       await sleep(exercise.RepDurationSec * 1000);
+
+      if (exercise.RepBreakSec > 0) {
+        await sleep(exercise.RepBreakSec * 1000);
+      }
     }
 
     if (s < exercise.SetsCount - 1) {
-      document.getElementById("status").innerText = "Rest";
-      await sleep(exercise.SetBreakSec * 1000);
+      speak("Rest");
+      await countdown(exercise.SetBreakSec, "Rest");
     }
   }
+
+  speak("Exercise complete");
+  setStatus("Exercise complete");
 
   await fetch("/api/history", {
     method: "POST",
@@ -53,6 +96,7 @@ async function startWorkout() {
     })
   });
 
+  await sleep(3000);
   window.location = "/";
 }
 
@@ -60,6 +104,7 @@ document.getElementById("start").onclick = startWorkout;
 
 document.getElementById("leave").onclick = () => {
   running = false;
+  speechSynthesis.cancel();
   window.location = "/";
 };
 
