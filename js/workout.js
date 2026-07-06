@@ -26,6 +26,8 @@ async function load() {
     return;
   }
 
+  document.getElementById("exerciseName").innerText = exercise.Name || "";
+  
   document.getElementById("img").src = exercise.Image1 || "";
   document.getElementById("instructions").innerText = exercise.Instructions || "";
 
@@ -78,6 +80,17 @@ async function countdown(seconds, label = "") {
   }
 }
 
+async function repCountdown(setNo, totalSets, repNo, totalReps, seconds) {
+  speak(String(repNo));
+
+  for (let i = seconds; i > 0; i--) {
+    if (!running) return;
+
+    setStatus(`Set ${setNo}/${totalSets}, Rep ${repNo}/${totalReps} — ${i}s`);
+    await sleep(1000);
+  }
+}
+
 async function startWorkout() {
   if (!exercise) return;
 
@@ -95,7 +108,7 @@ async function startWorkout() {
     for (let r = 0; r < exercise.RepCount; r++) {
       if (!running) return;
 
-      setStatus(`Set ${s + 1} of ${exercise.SetsCount}, Rep ${r + 1} of ${exercise.RepCount}`);
+      await repCountdown(s + 1, exercise.SetsCount, r + 1, exercise.RepCount, exercise.RepDurationSec);
       speak(String(r + 1));
 
       await sleep(exercise.RepDurationSec * 1000);
