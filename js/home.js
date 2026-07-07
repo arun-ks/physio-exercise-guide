@@ -44,51 +44,80 @@ function render(filter = "") {
   const grid = document.getElementById("grid");
   grid.innerHTML = "";
 
-const search = filter.trim().toLowerCase();
-const filtered = exercises.filter(e => {
-  if (!search) return true;
+  const search = filter.trim().toLowerCase();
 
-  const haystack = [
-    e.ExID,
-    e.Name,
-    e.AlternateNames,
-    e.MuscleGroups,
-    e.DifficultyLevel
-  ]
-    .filter(Boolean)
-    .join(" ")
-    .toLowerCase();
+  const filtered = exercises.filter(e => {
+    if (!search) return true;
 
-  return haystack.includes(search);
-});
+    const haystack = [
+      e.ExID,
+      e.Name,
+      e.AlternateNames,
+      e.MuscleGroups,
+      e.DifficultyLevel
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
 
-  console.log("[HOME] filtered count:", filtered.length);
-
-  filtered.forEach(e => {
-    const card = document.createElement("div");
-    card.className = "card";
-
-    card.innerHTML = `
-      <img class="card-img" src="${e.Image1 || ""}" alt="${e.Name || ""}">
-      <div class="card-body">
-        <h3>${e.Name}</h3>
-        <p><strong>${e.RepCount}</strong> reps × <strong>${e.SetsCount}</strong> sets</p>
-        <p>${e.MuscleGroups}</p>
-        <p>~ ${estimatedMinutes(e)} min</p>
-        <p>Last: ${daysSince(e.LastCompletedTime)}</p>
-      </div>
-    `;
-
-    card.onclick = () => {
-      console.log("[HOME] opening exercise:", e.ExID);
-      window.location = `exercise.html?exid=${encodeURIComponent(e.ExID)}`;
-    };
-
-    grid.appendChild(card);
+    return haystack.includes(search);
   });
 
+  const groups = {};
+
+  filtered.forEach(e => {
+    const groupName = (e.MuscleGroups || "Ungrouped").trim();
+
+    if (!groups[groupName]) {
+      groups[groupName] = [];
+    }
+
+    groups[groupName].push(e);
+  });
+
+  Object.keys(groups).forEach(groupName => {
+    const section = document.createElement("section");
+    section.className = "exercise-group";
+
+    section.innerHTML = `
+      <div class="group-header">
+        <h2>${groupName}</h2>
+        <span>${groups[groupName].length} exercises</span>
+      </div>
+      <div class="group-grid"></div>
+    `;
+
+    const groupGrid = section.querySelector(".group-grid");
+
+    groups[groupName].forEach(e => {
+      const card = document.createElement("div");
+      card.className = "card";
+
+      card.innerHTML = `
+        <img class="card-img" src="${e.Image1 || ""}" alt="${e.Name || ""}">
+        <div class="card-body">
+          <h3>${e.Name}</h3>
+          <p><strong>${e.RepCount}</strong> reps × <strong>${e.SetsCount}</strong> sets</p>
+          <p>~ ${estimatedMinutes(e)} min</p>
+          <p>Last: ${daysSince(e.LastCompletedTime)}</p>
+        </div>
+      `;
+
+      card.onclick = () => {
+        console.log("[HOME] opening exercise:", e.ExID);
+        window.location = `exercise.html?exid=${encodeURIComponent(e.ExID)}`;
+      };
+
+      groupGrid.appendChild(card);
+    });
+
+    grid.appendChild(section);
+  });
+
+  console.log("[HOME] group count:", Object.keys(groups).length);
   console.timeEnd("[HOME] render");
 }
+
 
 document.getElementById("filterInput").addEventListener("input", e => {
   render(e.target.value);
