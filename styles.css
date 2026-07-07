@@ -54,9 +54,9 @@ h1 {
 }
 
 #grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-  gap: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
 }
 
 .card {
@@ -338,9 +338,9 @@ h1 {
 }
 
 .group-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-  gap: 18px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px,1fr));
+    gap: 18px;
 }
 
 @media (max-width: 700px) {
