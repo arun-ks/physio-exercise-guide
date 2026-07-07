@@ -358,3 +358,25 @@ h1 {
   }
 }
 
+.group-header {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    margin-bottom:16px;
+    padding-bottom:8px;
+
+    border-bottom:2px solid #d7e2e2;
+}
+
+.group-header h2{
+    margin:0;
+    font-size:28px;
+    color:var(--accent-dark);
+}
+
+.group-header span{
+    font-size:15px;
+    color:var(--muted);
+}
+
